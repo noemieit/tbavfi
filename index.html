@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allocation Assurance-vie — Thierry</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--t:#0d8c74;--td:#062e28;--tm:#0a6e5c;--tl:#12b090;--tp:#8dd4c4;--font:'Outfit',Arial,sans-serif;}
+body{background:#fff;font-family:var(--font);color:#0D1A17;min-height:100vh;}
+.container{max-width:900px;margin:0 auto;padding:48px 32px;}
+.hero{border-radius:24px;padding:40px 40px 36px;margin-bottom:32px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0d8c74 0%,#084d3f 45%,#062e28 80%,#021a16 100%);}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(141,212,196,0.3) 0%,transparent 70%);}
+.hero::after{content:'';position:absolute;bottom:-40px;left:35%;width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(18,176,144,0.2) 0%,transparent 70%);}
+.hero-inner{position:relative;z-index:1;}
+.hero h1{font-size:28px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:10px;}
+.hero-sub{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.65;max-width:520px;margin-bottom:24px;}
+.hero-pills{display:flex;gap:10px;flex-wrap:wrap;}
+.pill{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:100px;
+  padding:6px 16px;font-size:12px;font-weight:500;color:#fff;display:flex;align-items:center;gap:6px;}
+.pill-dot{width:6px;height:6px;border-radius:50%;background:var(--tl);}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px;}
+.kpi{border-radius:16px;padding:20px 20px 18px;position:relative;overflow:hidden;}
+.kpi-1{background:linear-gradient(135deg,#0d8c74,#084d3f);}
+.kpi-2{background:linear-gradient(135deg,#12b090,#0d8c74);}
+.kpi-3{background:linear-gradient(135deg,#084d3f,#062e28);}
+.kpi-4{background:linear-gradient(135deg,#062e28,#021a16);}
+.kpi::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.08);}
+.kpi-label{font-size:10px;font-weight:300;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:8px;}
+.kpi-value{font-size:20px;font-weight:800;color:#fff;position:relative;z-index:1;}
+.kpi-value small{font-size:11px;font-weight:400;opacity:0.75;margin-left:3px;}
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+.chart-card{background:#f4faf8;border:1.5px solid rgba(13,140,116,0.15);border-radius:20px;padding:28px;}
+.card-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--t);margin-bottom:22px;}
+.donut-wrapper{position:relative;width:190px;height:190px;margin:0 auto 24px;}
+.donut-wrapper canvas{width:100%!important;height:100%!important;}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.dc-amount{font-size:19px;font-weight:800;color:#0D1A17;}
+.dc-label{font-size:10px;color:#6b8c85;margin-top:2px;}
+.legend{display:flex;flex-direction:column;gap:8px;}
+.leg-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:background 0.2s;}
+.leg-item:hover{background:rgba(13,140,116,0.07);}
+.leg-bar{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+.leg-name{font-size:13px;color:#3a5c55;flex:1;}
+.leg-pct{font-size:12px;font-weight:700;color:#0D1A17;}
+.supports-section{display:flex;flex-direction:column;gap:12px;}
+.sup-card{border-radius:16px;border:1.5px solid rgba(13,140,116,0.12);background:#fff;cursor:pointer;
+  transition:border-color 0.2s,box-shadow 0.2s;overflow:hidden;}
+.sup-card:hover{border-color:rgba(13,140,116,0.4);box-shadow:0 4px 20px rgba(13,140,116,0.1);}
+.sup-card.active{border-color:var(--t);box-shadow:0 6px 28px rgba(13,140,116,0.18);}
+.sup-head{display:flex;align-items:center;gap:12px;padding:14px 18px;}
+.sup-accent{width:4px;border-radius:4px;height:34px;flex-shrink:0;}
+.sup-name{font-size:13px;font-weight:600;color:#0D1A17;flex:1;line-height:1.25;}
+.sup-right{text-align:right;}
+.sup-amount{font-size:13px;font-weight:700;color:#0D1A17;}
+.sup-pct{font-size:11px;color:#6b8c85;}
+.sup-detail{overflow:hidden;max-height:0;transition:max-height 0.38s ease;}
+.sup-card.active .sup-detail{max-height:300px;}
+.sup-body{padding:0 18px 16px;}
+.sup-divider{height:1px;background:linear-gradient(to right,rgba(13,140,116,0.2),transparent);margin-bottom:12px;}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-bottom:12px;}
+.meta-l{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#6b8c85;margin-bottom:3px;}
+.meta-v{font-size:13px;font-weight:700;color:#0D1A17;}
+.renta{background:linear-gradient(135deg,var(--t),var(--tl));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.horizon-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;}
+.hb-ct{background:rgba(13,140,116,0.12);color:var(--td);}
+.hb-mt{background:rgba(18,176,144,0.15);color:var(--tm);}
+.sup-phrase{font-size:12px;color:#4a7068;line-height:1.65;
+  background:linear-gradient(135deg,rgba(13,140,116,0.06),rgba(18,176,144,0.04));
+  border-left:2px solid var(--t);padding:10px 13px;border-radius:0 8px 8px 0;}
+#tooltip{position:fixed;background:#fff;border:1.5px solid rgba(13,140,116,0.35);border-radius:14px;
+  padding:14px 18px;pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:999;min-width:210px;
+  box-shadow:0 8px 32px rgba(13,140,116,0.2);}
+.tt-name{font-size:12px;font-weight:700;color:var(--t);margin-bottom:8px;}
+.tt-row{display:flex;justify-content:space-between;gap:16px;margin-bottom:5px;}
+.tt-l{font-size:11px;color:#6b8c85;}
+.tt-v{font-size:11px;font-weight:600;color:#0D1A17;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <div class="hero-inner">
+      <h1>Votre allocation en Assurance-vie</h1>
+      <p class="hero-sub">Votre investissement est réparti entre trois supports complémentaires : un socle sécurisé en fonds euros et deux produits structurés pour optimiser la performance à moyen terme.</p>
+      <div class="hero-pills">
+        <div class="pill"><span class="pill-dot"></span>Generali Patrimoine</div>
+        <div class="pill"><span class="pill-dot"></span>3 supports</div>
+        <div class="pill"><span class="pill-dot"></span>Renta. moy. 7,2 % / an</div>
+      </div>
+    </div>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi kpi-1"><div class="kpi-label">Montant total</div><div class="kpi-value">30 000 <small>€</small></div></div>
+    <div class="kpi kpi-2"><div class="kpi-label">Fonds Euros</div><div class="kpi-value">15 000 <small>€</small></div></div>
+    <div class="kpi kpi-3"><div class="kpi-label">PS Souveraineté</div><div class="kpi-value">7 500 <small>€</small></div></div>
+    <div class="kpi kpi-4"><div class="kpi-label">PS Mémoire Euribor</div><div class="kpi-value">7 500 <small>€</small></div></div>
+  </div>
+  <div class="main-grid">
+    <div class="chart-card">
+      <div class="card-label">Répartition de l'allocation</div>
+      <div class="donut-wrapper">
+        <canvas id="donutChart"></canvas>
+        <div class="donut-center">
+          <div class="dc-amount" id="centerAmount">30k€</div>
+          <div class="dc-label" id="centerLabel">Total investi</div>
+        </div>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="supports-section" id="cardsList"></div>
+  </div>
+</div>
+<div id="tooltip">
+  <div class="tt-name" id="ttName"></div>
+  <div class="tt-row"><span class="tt-l">Montant</span><span class="tt-v" id="ttAmount"></span></div>
+  <div class="tt-row"><span class="tt-l">Allocation</span><span class="tt-v" id="ttPct"></span></div>
+  <div class="tt-row"><span class="tt-l">Rentabilité est.</span><span class="tt-v" id="ttRenta"></span></div>
+  <div class="tt-row"><span class="tt-l">Horizon</span><span class="tt-v" id="ttHorizon"></span></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const supports = [
+  {
+    name: "Fonds Euros",
+    fullName: "Fonds Euros Generali Patrimoine",
+    montant: 15000,
+    renta: 5.3,
+    horizon: "Court terme",
+    hClass: "hb-ct",
+    color: "#12b090",
+    colorD: "#084d3f",
+    phrase: "Le fonds euros offre une garantie totale du capital avec une rémunération nette stable. Il constitue le socle sécurisé de votre contrat, accessible à tout moment et sans risque de perte."
+  },
+  {
+    name: "Rendement Actions Souveraineté",
+    fullName: "PS Rendement Actions Souveraineté Juin 2026",
+    montant: 7500,
+    renta: 9.5,
+    horizon: "Moyen terme",
+    hClass: "hb-mt",
+    color: "#062e28",
+    colorD: "#021a16",
+    phrase: "Ce produit structuré à échéance juin 2026 est indexé sur des actions de souveraineté. Il offre une maturité définie et une lisibilité claire sur l'horizon de placement, avec un rendement estimé attractif de 9,5 % / an."
+  },
+  {
+    name: "Rendement Mémoire Euribor",
+    fullName: "PS Rendement Mémoire Euribor",
+    montant: 7500,
+    renta: 6.8,
+    horizon: "Moyen terme",
+    hClass: "hb-mt",
+    color: "#0a6e5c",
+    colorD: "#062e28",
+    phrase: "Ce produit structuré à mémoire est indexé sur l'Euribor. Il propose un mécanisme de rappel des coupons non versés et offre une visibilité sur la performance à moyen terme, avec un rendement estimé de 6,8 % / an."
+  }
+];
+const total = 30000;
+function fmt(n) { return n.toLocaleString('fr-FR') + ' €'; }
+function fmtK(n) { return n >= 1000 ? (n / 1000).toFixed(0) + 'k€' : n + '€'; }
+const legendEl = document.getElementById('legend');
+const cardsEl  = document.getElementById('cardsList');
+supports.forEach((s, i) => {
+  const pct = Math.round(s.montant / total * 100);
+  legendEl.innerHTML += `<div class="leg-item" data-i="${i}">
+    <div class="leg-bar" style="background:linear-gradient(135deg,${s.color},${s.colorD})"></div>
+    <span class="leg-name">${s.name}</span>
+    <span class="leg-pct">${pct}%</span>
+  </div>`;
+  cardsEl.innerHTML += `<div class="sup-card" id="card${i}" data-i="${i}">
+    <div class="sup-head">
+      <div class="sup-accent" style="background:linear-gradient(to bottom,${s.color},${s.colorD})"></div>
+      <span class="sup-name">${s.name}</span>
+      <div class="sup-right">
+        <div class="sup-amount">${fmtK(s.montant)}</div>
+        <div class="sup-pct">${pct}% du total</div>
+      </div>
+    </div>
+    <div class="sup-detail"><div class="sup-body">
+      <div class="sup-divider"></div>
+      <div class="meta-grid">
+        <div><div class="meta-l">Montant investi</div><div class="meta-v">${fmt(s.montant)}</div></div>
+        <div><div class="meta-l">Allocation</div><div class="meta-v">${pct}% du total</div></div>
+        <div><div class="meta-l">Rentabilité est.</div><div class="meta-v renta">${s.renta}% / an</div></div>
+        <div><div class="meta-l">Horizon</div><div class="meta-v"><span class="horizon-badge ${s.hClass}">${s.horizon}</span></div></div>
+      </div>
+      <div class="sup-phrase">${s.phrase}</div>
+    </div></div>
+  </div>`;
+});
+document.querySelectorAll('.sup-card').forEach(c => {
+  c.addEventListener('click', () => {
+    const was = c.classList.contains('active');
+    document.querySelectorAll('.sup-card').forEach(x => x.classList.remove('active'));
+    if (!was) c.classList.add('active');
+  });
+});
+document.querySelectorAll('.leg-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const i = item.dataset.i;
+    const card = document.getElementById('card' + i);
+    document.querySelectorAll('.sup-card').forEach(x => x.classList.remove('active'));
+    card.classList.add('active');
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+});
+const tt  = document.getElementById('tooltip');
+const ctx = document.getElementById('donutChart').getContext('2d');
+new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels: supports.map(s => s.name),
+    datasets: [{
+      data: supports.map(s => s.montant),
+      backgroundColor: supports.map(s => s.color),
+      borderColor: '#ffffff',
+      borderWidth: 3,
+      hoverOffset: 10
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        enabled: false,
+        external: function({ chart: c, tooltip: t }) {
+          if (t.opacity === 0) { tt.style.opacity = '0'; resetCenter(); return; }
+          const s = supports[t.dataIndex];
+          const pct = Math.round(s.montant / total * 100);
+          document.getElementById('ttName').textContent    = s.fullName;
+          document.getElementById('ttAmount').textContent  = fmt(s.montant);
+          document.getElementById('ttPct').textContent     = pct + '% du total';
+          document.getElementById('ttRenta').textContent   = s.renta + '% / an';
+          document.getElementById('ttHorizon').textContent = s.horizon;
+          document.getElementById('centerAmount').textContent = fmtK(s.montant);
+          document.getElementById('centerLabel').textContent  = s.renta + '% est.';
+          const pos = c.canvas.getBoundingClientRect();
+          tt.style.left = (pos.left + window.scrollX + t.caretX - 105) + 'px';
+          tt.style.top  = (pos.top  + window.scrollY + t.caretY -  90) + 'px';
+          tt.style.opacity = '1';
+        }
+      }
+    }
+  }
+});
+function resetCenter() {
+  document.getElementById('centerAmount').textContent = '30k€';
+  document.getElementById('centerLabel').textContent  = 'Total investi';
+}
+document.getElementById('donutChart').addEventListener('mouseleave', () => {
+  tt.style.opacity = '0'; resetCenter();
+});
+</script>
+</body>
+</html>
